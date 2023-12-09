@@ -20,6 +20,7 @@
 DECLARE @VERSION VARCHAR(5) = '14.0'
 DECLARE @TAB_CHARACTER CHAR(1) = CHAR(9)
 DECLARE @NEWLINE CHAR(1) = CHAR(10)
+DECLARE @PROJ_DIR VARCHAR(255) = 'Z:\Census_2020\Demographic_and_Housing_Characteristics_File\'
 
 -- Variables
 DECLARE @CurSegment TINYINT
@@ -136,7 +137,7 @@ BEGIN
 	SET @log_message = 'Exporting segment: ' + CONVERT( VARCHAR, @CurSegment ) + ' at: ' + CONVERT( VARCHAR, GETDATE(), 113 )
 		RAISERROR( @log_message, 0, 1 ) WITH NOWAIT
 	DECLARE @SQL_Command VARCHAR(1000)
-	SET @SQL_Command = 'bcp "SELECT file_contents FROM ##tmp" queryout Z:\Census_2020\Demographic_and_Housing_Characteristics_File\Format_Files\AttributeFile' + RIGHT( '00' + CONVERT( VARCHAR, @CurSegment ), 2 ) + '.fmt -c -T'
+	SET @SQL_Command = 'bcp "SELECT file_contents FROM ##tmp" queryout ' + @PROJ_DIR + 'Format_Files\AttributeFile' + RIGHT( '00' + CONVERT( VARCHAR, @CurSegment ), 2 ) + '.fmt -c -T'
 	EXEC master..xp_cmdshell @SQL_Command
 
 	--=============================================================================
