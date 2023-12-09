@@ -1,3 +1,8 @@
+DECLARE @PROJ_DIR VARCHAR(255) = 'Z:\Census_2020\Demographic_and_Housing_Characteristics_File\'
+DECLARE @DataFile VARCHAR(255)
+DECLARE @formatFile VARCHAR(255)
+DECLARE @SQL VARCHAR(MAX)
+
 --=============================================================================
 --Take a look at the main fields
 --=============================================================================
@@ -67,7 +72,7 @@ INTO ##tmp
 -- Call the BCP utility to export what we created to a file.
 --=============================================================================
 DECLARE @SQL_Command VARCHAR(1000)
-SET @SQL_Command = 'bcp "SELECT file_contents FROM ##tmp" queryout Z:\Census_2020\Demographic_and_Housing_Characteristics_File\Format_Files\DHC2020_Geo_Layout.fmt -c -T'
+SET @SQL_Command = 'bcp "SELECT file_contents FROM ##tmp" queryout ' + @PROJ_DIR + 'Format_Files\DHC2020_Geo_Layout.fmt -c -T'
 EXEC master..xp_cmdshell @SQL_Command
 
 --=============================================================================
@@ -78,16 +83,23 @@ DROP TABLE ##tmp
 --=============================================================================
 -- Import the data using the format file we just created
 --=============================================================================
-IF OBJECT_ID( 'Census_2020_DHC.dbo.DHC2020_GEO' ) IS NOT NULL
-	DROP TABLE Census_2020_DHC.dbo.DHC2020_GEO
-SELECT a.*
-INTO Census_2020_DHC.dbo.DHC2020_GEO
-FROM OPENROWSET(
-	BULK 'Z:\Census_2020\Demographic_and_Housing_Characteristics_File\Data\National\us2020.dhc\usgeo2020.dhc'
-		, FORMATFILE = 'Z:\Census_2020\Demographic_and_Housing_Characteristics_File\Format_Files\DHC2020_Geo_Layout.fmt'
-		, MAXERRORS = 0
-		, FIRSTROW = 1
-) a
+SET @DataFile = @PROJ_DIR + 'Data\National\us2020.dhc\usgeo2020.dhc'
+SET @formatFile = @PROJ_DIR + 'Format_Files\DHC2020_Geo_Layout.fmt'
+
+SET @SQL = '
+	IF OBJECT_ID( ''Census_2020_DHC.dbo.DHC2020_GEO'' ) IS NOT NULL
+		DROP TABLE Census_2020_DHC.dbo.DHC2020_GEO
+	SELECT a.*
+	INTO Census_2020_DHC.dbo.DHC2020_GEO
+	FROM OPENROWSET(
+		BULK ''' + @DataFile + '''
+			, FORMATFILE = ''' + @formatFile + '''
+			, MAXERRORS = 0
+			, FIRSTROW = 1
+	) a
+'
+--PRINT( @SQL )
+EXEC( @SQL )
 --(603,898 rows affected)
 
 --=============================================================================
@@ -109,16 +121,23 @@ ORDER BY 3 DESC
 --=============================================================================
 -- Import the NV state data using the format file we just created
 --=============================================================================
-IF OBJECT_ID( 'Census_2020_DHC.dbo.DHC2020_State_NV_GEO' ) IS NOT NULL
-	DROP TABLE Census_2020_DHC.dbo.DHC2020_State_NV_GEO
-SELECT a.*
-INTO Census_2020_DHC.dbo.DHC2020_State_NV_GEO
-FROM OPENROWSET(
-	BULK 'Z:\Census_2020\Demographic_and_Housing_Characteristics_File\Data\States\nv2020.dhc\nvgeo2020.dhc'
-		, FORMATFILE = 'Z:\Census_2020\Demographic_and_Housing_Characteristics_File\Format_Files\DHC2020_Geo_Layout.fmt'
-		, MAXERRORS = 0
-		, FIRSTROW = 1
-) a
+SET @DataFile = @PROJ_DIR + 'Data\States\nv2020.dhc\nvgeo2020.dhc'
+SET @formatFile = @PROJ_DIR + 'Format_Files\DHC2020_Geo_Layout.fmt'
+
+SET @SQL = '
+	IF OBJECT_ID( ''Census_2020_DHC.dbo.DHC2020_State_NV_GEO'' ) IS NOT NULL
+		DROP TABLE Census_2020_DHC.dbo.DHC2020_State_NV_GEO
+	SELECT a.*
+	INTO Census_2020_DHC.dbo.DHC2020_State_NV_GEO
+	FROM OPENROWSET(
+		BULK ''' + @DataFile + '''
+			, FORMATFILE = ''' + @formatFile + '''
+			, MAXERRORS = 0
+			, FIRSTROW = 1
+	) a
+'
+--PRINT( @SQL )
+EXEC( @SQL )
 --(75600 rows affected)
 
 --=============================================================================
@@ -134,18 +153,14 @@ LEFT JOIN Census_2020_DHC.dbo.lkpSUMLEV_State_DHC2020 b
 GROUP BY a.SUMLEV, b.[Summary Level]
 ORDER BY 3 DESC
 
-
 --=============================================================================
--- What's the overlap like between the two files.
+-- What's the overlap like between the two files.?
 --=============================================================================
 SELECT n.*
 	, s.*
 FROM Census_2020_DHC.dbo.lkpSUMLEV_National_DHC2020 n
 INNER JOIN Census_2020_DHC.dbo.lkpSUMLEV_State_DHC2020 s
 	ON n.SUMLEV = s.SUMLEV
-
-
-
 
 SELECT TOP 1000 * 
 FROM Census_2020_DHC.dbo.DHC2020_GEO
