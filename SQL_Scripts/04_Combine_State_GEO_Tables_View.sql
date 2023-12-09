@@ -1,7 +1,9 @@
 USE Census_2020_DHC
 
 GO
-
+--=============================================================================
+-- Create a vew that UNIONS together all of the state tables
+--=============================================================================
 CREATE VIEW dbo.vwDHC2020_GEO_ALL AS
 (
 	SELECT a.*
@@ -221,6 +223,9 @@ CREATE VIEW dbo.vwDHC2020_GEO_ALL AS
 
 GO
 
+--=============================================================================
+-- Confirm all the states are present (50 + DC + PR)
+--=============================================================================
 SELECT
 	States = COUNT( DISTINCT STATE )
 FROM Census_2020_DHC.dbo.vwDHC2020_GEO_ALL 
