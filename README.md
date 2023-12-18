@@ -27,3 +27,16 @@ The next folder, [\Misc](Misc), holds miscellaneous resources that have been com
   - The summary levels that are present in the state-level files.  This file has been modified to include a “clean” worksheet version that can be easily loaded into your SQL database as a lookup table.
 ### \SQL_Scripts
 The final folder, [\SQL_Scripts](SQL_Scripts), holds all of the T-SQL scripts that will be used to load the data files into SQL Server.
+
+## Getting Started
+The process below will describe how to load the entire 2020 Census Demographic and Housing Characteristics (DHC) file; however, you are free to modify the process to only load the files you want or need.
+1.	Create a folder to hold your project and add the folder structure of this repository
+2.	Create a database on your SQL server to hold all of the data.  I named my database: “Census_2020_DHC”
+3.	Download the national-level files from: https://www2.census.gov/programs-surveys/decennial/2020/data/demographic-and-housing-characteristics-file/National/  into the [\Data\National](Data/National) folder
+4.	Download the state-level files from each state folder in: https://www2.census.gov/programs-surveys/decennial/2020/data/demographic-and-housing-characteristics-file/ into the [\Data\States](Data/States) folder
+5.	Unzip all of the files you’ve downloaded
+6.	Download the geographic header file layout [here](Misc/geoheader-2020-dhc-national.xlsx)
+7.	Download the attribute files layout [here](Misc/file_layout_2020_DHC-National.xlsx)
+8.	Load the geographic header file layout using SQL’s GUI Import/Export tool.  Only load the worksheet named: "National DHC Geo Header - Clean"
+9.	Load the attribute files layout using SQL’s GUI Import/Export tool.  Only load the worksheet named: "Layout_Clean"
+10.	Run the scripts in the [\SQL_Scripts](SQL_Scripts) folder of this repository in the order that they are numbered.
