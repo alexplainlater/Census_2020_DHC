@@ -37,6 +37,6 @@ The process below will describe how to load the entire 2020 Census Demographic a
 5.	Unzip all of the files you’ve downloaded
 6.	Download the geographic header file layout [here](Misc/geoheader-2020-dhc-national.xlsx)
 7.	Download the attribute files layout [here](Misc/file_layout_2020_DHC-National.xlsx)
-8.	Load the geographic header file layout using SQL’s GUI Import/Export tool.  Only load the worksheet named: "National DHC Geo Header - Clean"
-9.	Load the attribute files layout using SQL’s GUI Import/Export tool.  Only load the worksheet named: "Layout_Clean"
+8.	Load the geographic header file layout using SQL’s GUI Import/Export tool.  Only load the worksheet named: "National DHC Geo Header - Clean".  The scripts below will expect it to be loaded into a table named: Census_2020_DHC.dbo.layoutDHC2020_Geo
+9.	Load the attribute files layout using SQL’s GUI Import/Export tool.  Only load the worksheet named: "Layout_Clean".  The scripts below will expect it to be loaded into a table named: Census_2020_DHC.dbo.layoutDHC2020
 10.	Run the scripts in the [\SQL_Scripts](SQL_Scripts) folder of this repository in the order that they are numbered.
